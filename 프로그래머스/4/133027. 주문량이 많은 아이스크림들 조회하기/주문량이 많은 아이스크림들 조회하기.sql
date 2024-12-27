@@ -1,0 +1,14 @@
+SELECT FLAVOR
+FROM (
+    SELECT FLAVOR, SUM(TOTAL_ORDER) AS total_order
+    FROM (
+        SELECT FLAVOR, TOTAL_ORDER
+        FROM FIRST_HALF
+        UNION ALL
+        SELECT FLAVOR, TOTAL_ORDER
+        FROM JULY
+    ) AS combined
+    GROUP BY FLAVOR
+) AS summed
+ORDER BY total_order DESC
+LIMIT 3;
