@@ -2,51 +2,31 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String[] str = br.readLine().split(" ");
-        int n = Integer.parseInt(str[0]);
-        int k = Integer.parseInt(str[1]);
+        String[] input =  br.readLine().split(" ");
+        int n = Integer.parseInt(input[0]);
+        int k  = Integer.parseInt(input[1]);
 
-        ArrayList<Map<Integer, Integer>> list = new ArrayList<>();
+        int[] weight = new int[n];
+        int[] value = new int[n];
         for (int i = 0; i < n; i++) {
-            str = br.readLine().split(" ");
-            Map<Integer, Integer> m = new HashMap<>();
-            m.put(Integer.parseInt(str[0]), Integer.parseInt(str[1]));
-            list.add(m);
+            input = br.readLine().split(" ");
+            weight[i] = Integer.parseInt(input[0]);
+            value[i] = Integer.parseInt(input[1]);
         }
 
-        ArrayList<Map<Integer, Integer>> dp = new ArrayList<>();
-
+        int[] dp = new int[k+1];
         for (int i = 0; i < n; i++) {
-            Map<Integer, Integer> item = list.get(i);
-            int wt = item.keySet().iterator().next();
-            int val = item.get(wt);
+            int wt = weight[i];
+            int v = value[i];
 
-            Map<Integer, Integer> curr = new HashMap<>();
-            if (wt <= k) {
-                curr.put(wt, val);
-            }
-
-            for (int j = 0; j < i; j++) {
-                for (Map.Entry<Integer, Integer> e : dp.get(j).entrySet()) {
-                    int newW = e.getKey() + wt;
-                    int newV = e.getValue() + val;
-                    if (newW <= k) {
-                        curr.merge(newW, newV, Math::max);
-                    }
-                }
-            }
-
-            dp.add(curr);
-        }
-
-        int answer = 0;
-        for (Map<Integer, Integer> m : dp) {
-            for (int v : m.values()) {
-                answer = Math.max(answer, v);
+            for (int w = k; w >= wt; w--) {
+                dp[w] = Math.max(dp[w], dp[w-wt] + v);
             }
         }
-        System.out.println(answer);
+
+        int max = Arrays.stream(dp).max().getAsInt();
+        System.out.println(max);
     }
 }
