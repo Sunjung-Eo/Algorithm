@@ -1,50 +1,40 @@
 import java.util.*;
 
 class Solution {
-    int[][] map;
-    boolean[][] visited;
-    int[] dx = {-1, 1, 0, 0};
-    int[] dy = {0, 0, -1, 1};
-    int h, w;
+    static int[] dc = {-1, 1, 0, 0};
+    static int[] dr = {0, 0, -1, 1}; //동, 서, 남, 북
     
     public int solution(int[][] maps) {
-        map = maps;
-        h = maps.length;
-        w = maps[0].length;
-        visited = new boolean[h][w];
-        
-        int answer = bfs();
+        int answer = bfs(maps, maps.length, maps[0].length);
         return answer;
     }
     
-    public int bfs() {
+    public int bfs(int[][] maps, int n, int m) {
         Queue<int[]> q = new ArrayDeque<>();
-        visited[0][0] = true;
-        q.add(new int[]{0, 0, 1});
+        int[][] visited = new int[n][m];
+        
+        q.offer(new int[]{0, 0});
+        visited[0][0] = 1;
         
         while(!q.isEmpty()) {
             int[] cur = q.poll();
-            int x = cur[0];
-            int y = cur[1];
-            int cnt = cur[2];
-            
-            if (x == h - 1 && y == w - 1) {
-                return cnt;
-            }
+            int r = cur[0];
+            int c = cur[1];
             
             for (int i = 0; i < 4; i++) {
-                int nx = x + dx[i];
-                int ny = y + dy[i];
+                int nr = r + dr[i];
+                int nc = c + dc[i];
                 
-                if (nx < 0 || nx >= h || ny < 0 || ny >= w) continue;
-                if (map[nx][ny] == 0) continue;
-                if (visited[nx][ny]) continue;
+                if (nr == n - 1 && nc == m - 1) return visited[r][c] + 1;
                 
-                visited[nx][ny] = true;
-                q.add(new int[]{nx, ny, cnt + 1});
+                if (nr < 0 || nr >= n || nc < 0 || nc >= m) continue;
+                if (maps[nr][nc] == 0) continue;
+                if (visited[nr][nc] != 0) continue;
+                
+                q.offer(new int[]{nr, nc});
+                visited[nr][nc] = visited[r][c] + 1;
             }
-        }
-        
+        }     
         return -1;
     }
 }
