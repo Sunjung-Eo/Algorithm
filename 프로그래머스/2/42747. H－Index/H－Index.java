@@ -1,18 +1,23 @@
 import java.util.*;
-import java.math.*;
 
 class Solution {
     public int solution(int[] citations) {
-        Arrays.sort(citations);        
-        int n = citations.length;
-
-        for (int i = 0; i < n; i++) {
-            int hCandidate = n - i;    
-            if (citations[i] >= hCandidate) {
-                return hCandidate;    
+        List<Integer> tmp = new ArrayList<>();
+        for (int i = 0; i < citations.length; i++) {
+            tmp.add(citations[i]);
+        }
+        
+        tmp.sort((a, b) -> b - a);
+        int answer = 0;
+        
+        for (int i = 0; i < tmp.size(); i++) {
+            if (i < tmp.get(i)) {
+                answer = i + 1;
+            } else {
+                break;
             }
         }
-
-        return 0;
+        
+        return answer;
     }
 }
