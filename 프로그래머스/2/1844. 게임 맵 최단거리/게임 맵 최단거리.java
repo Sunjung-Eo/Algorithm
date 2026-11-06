@@ -1,40 +1,47 @@
 import java.util.*;
 
 class Solution {
-    static int[] dc = {-1, 1, 0, 0};
-    static int[] dr = {0, 0, -1, 1}; //동, 서, 남, 북
+    static int[] dr = {-1, 1, 0, 0};
+    static int[] dc = {0, 0, -1, 1};
     
     public int solution(int[][] maps) {
-        int answer = bfs(maps, maps.length, maps[0].length);
-        return answer;
-    }
-    
-    public int bfs(int[][] maps, int n, int m) {
-        Queue<int[]> q = new ArrayDeque<>();
-        int[][] visited = new int[n][m];
+        int row = maps.length;
+        int col = maps[0].length;
         
+        // create visited and re-set
+        int[][] visited = new int[row][col];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                visited[i][j] = -1;
+            }
+        }
+        
+        // create q and set
+        Queue<int[]> q = new ArrayDeque<>();
         q.offer(new int[]{0, 0});
         visited[0][0] = 1;
         
-        while(!q.isEmpty()) {
+        //bfs
+        while(!q.isEmpty()){
             int[] cur = q.poll();
-            int r = cur[0];
-            int c = cur[1];
+            int x = cur[0];
+            int y = cur[1];
+            
+            if (x == row - 1 && y == col - 1) break;
             
             for (int i = 0; i < 4; i++) {
-                int nr = r + dr[i];
-                int nc = c + dc[i];
+                int nx = x + dr[i];
+                int ny = y + dc[i];
                 
-                if (nr == n - 1 && nc == m - 1) return visited[r][c] + 1;
+                if (nx < 0 || nx >= row || ny < 0 || ny >= col) continue;
+                if (maps[nx][ny] == 0 || visited[nx][ny] != -1) continue;
                 
-                if (nr < 0 || nr >= n || nc < 0 || nc >= m) continue;
-                if (maps[nr][nc] == 0) continue;
-                if (visited[nr][nc] != 0) continue;
-                
-                q.offer(new int[]{nr, nc});
-                visited[nr][nc] = visited[r][c] + 1;
+                q.offer(new int[]{nx, ny});
+                visited[nx][ny] = visited[x][y] + 1;
             }
-        }     
+        }
+        
+        if (visited[row-1][col-1] != -1) return visited[row-1][col-1];
         return -1;
     }
 }
